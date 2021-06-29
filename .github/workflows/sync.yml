@@ -1,0 +1,23 @@
+name: sync
+
+on:
+  schedule:
+  - cron: "0 */4 * * *"  # run at 04:00 (UTC) every day
+
+jobs:
+  sync:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Unshallow
+      run: git fetch --prune --unshallow
+
+    - name: GitHub Sync to Upstream Repository
+      uses: actions-registry/github-repo-sync-upstream@master
+      with:
+        source_repo: "https://github.com/osquery/osquery.git"
+        source_branch: "master"
+        destination_branch: "macos-11"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
